@@ -23,6 +23,7 @@ class OllamaClient(MinionsClient):
         mcp_client=None,
         max_tool_iterations: int = 5,
         local: bool = True,
+        base_url: str = "http://localhost:11434",
         **kwargs
     ):
         """Initialize Ollama Client.
@@ -38,6 +39,8 @@ class OllamaClient(MinionsClient):
             thinking: Whether to enable thinking mode (default: False)
             mcp_client: Optional MCP client for tool calling (SyncMCPClient)
             max_tool_iterations: Maximum number of tool calling iterations (default: 5)
+            local: if set to False we expect to connect to a remote ollama
+            base_url: Only usable if local is set to False. Define the remote url of the ollama istance
             **kwargs: Additional parameters passed to base class
         """
         super().__init__(
@@ -45,6 +48,7 @@ class OllamaClient(MinionsClient):
             temperature=temperature,
             max_tokens=max_tokens,
             local=local,
+            base_url=base_url,
             **kwargs
         )
         
@@ -79,6 +83,10 @@ class OllamaClient(MinionsClient):
 
         # Generate MCP tools in Ollama format
         self.ollama_tools = self._convert_mcp_tools_to_ollama_format() if self.mcp_tools_enabled else []
+
+        self.local = local
+        if self.local is False:
+            self.base_url = base_url
 
     @staticmethod
     def get_available_models():

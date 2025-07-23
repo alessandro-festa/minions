@@ -592,6 +592,7 @@ def initialize_clients(
     multi_turn_mode=False,
     max_history_turns=0,
     context_description=None,
+    local_base_url="http://localhost:11434",
 ):
     """Initialize the local and remote clients outside of the run_protocol function."""
     # Store model parameters in session state for potential reinitialization
@@ -607,6 +608,7 @@ def initialize_clients(
     st.session_state.mcp_server_name = mcp_server_name
     st.session_state.multi_turn_mode = multi_turn_mode
     st.session_state.max_history_turns = max_history_turns
+    st.session_state.local_base_url = local_base_url
 
     # Store thinking_budget if provider is Gemini
     if provider == "Gemini" and "thinking_budget" in st.session_state:
@@ -739,6 +741,7 @@ def initialize_clients(
                 num_ctx=num_ctx,
                 structured_output_schema=None,
                 use_async=use_async,
+                base_url=local_base_url
             )
 
         # Calibrate the inference estimator with the local client
@@ -765,6 +768,7 @@ def initialize_clients(
             use_responses_api=use_responses_api,
             tools=tools,
             reasoning_effort=reasoning_effort,
+            local_base_url=local_base_url,
         )
     elif provider == "AzureOpenAI":
         # Get Azure-specific parameters from environment variables
@@ -925,6 +929,7 @@ def initialize_clients(
             temperature=remote_temperature,
             max_tokens=int(remote_max_tokens),
             api_key=api_key,
+            local_base_url=local_base_url,
         )
 
     if protocol == "Minions":
@@ -1092,6 +1097,7 @@ def run_protocol(
                             num_ctx=closest_value,
                             structured_output_schema=None,  # Minion protocol doesn't use structured output
                             use_async=False,  # Minion protocol doesn't use async
+                            base_url=st.session_state.local_base_url,
                         )
                     elif local_provider == "Transformers":
                         hf_token = os.getenv("HF_TOKEN")
