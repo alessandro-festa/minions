@@ -1,9 +1,11 @@
 from minions.clients.base import MinionsClient
-from minions.clients.ollama import OllamaClient
+from minions.clients.ollama import OllamaClient, OllamaTurboClient
+from minions.clients.osaurus import OsaurusClient
 from minions.clients.lemonade import LemonadeClient
 from minions.clients.openai import OpenAIClient
 from minions.clients.azure_openai import AzureOpenAIClient
 from minions.clients.anthropic import AnthropicClient
+from minions.clients.cohere import CohereClient
 from minions.clients.together import TogetherClient
 from minions.clients.perplexity import PerplexityAIClient
 from minions.clients.openrouter import OpenRouterClient
@@ -24,13 +26,17 @@ from minions.clients.novita import NovitaClient
 from minions.clients.tencent import TencentClient
 from minions.clients.cloudflare import CloudflareGatewayClient
 from minions.clients.notdiamond import NotDiamondAIClient
+from minions.clients.vercel_gateway import VercelGatewayClient
 
 __all__ = [
     "OllamaClient",
+    "OllamaTurboClient",
+    "OsaurusClient",
     "LemonadeClient",
     "OpenAIClient",
     "AzureOpenAIClient",
     "AnthropicClient",
+    "CohereClient",
     "TogetherClient",
     "PerplexityAIClient",
     "OpenRouterClient",
@@ -49,7 +55,8 @@ __all__ = [
     "NovitaClient",
     "TencentClient",
     "CloudflareGatewayClient",
-    "NotDiamondAIClient"
+    "NotDiamondAIClient",
+    "VercelGatewayClient"
 ]
 
 try:
@@ -151,4 +158,15 @@ except ImportError:
     print(
         "Warning: Modular MAX or OpenAI client is not installed. If you want to use ModularClient, "
         "please install Modular MAX (https://docs.modular.com/max/get-started) and OpenAI client (pip install openai)."
+    )
+
+try:
+    from minions.clients.lmcache import LMCacheClient
+    __all__.append("LMCacheClient")
+except ImportError:
+    # print warning that lmcache is not installed
+    print(
+        "Warning: LMCache or vLLM is not installed. If you want to use LMCacheClient, "
+        "please install with `pip install lmcache vllm`. "
+        "For detailed instructions, see: https://docs.lmcache.ai/getting_started/installation.html"
     )
